@@ -1,5 +1,7 @@
 {
   "version": "1.0.1",
   "changelog": "🛠️ تحسينات في إدارة الفواتير\n🐞 إصلاح خلل في نافذة الزبائن",
-  "url": "https://github.com/AliAI-spirt/spirit-updates/releases/download/v1.0.1/BeautyClinicInstaller.zip"
+  "url": "https://github.com/AliAI-spirt/spirit-updates/releases/download/v1.0.1/BeautyClinicInstaller.zip",
+  "local_path": r"C:\Users\hp\Desktop\Beauty Clinic - Installer.zip"  # فقط للاختبار المحلي
+
 }
