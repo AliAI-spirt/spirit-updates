@@ -1,0 +1,23 @@
+function Test-PythonInstalled {
+    return (Get-Command python -ErrorAction SilentlyContinue) -or (Get-Command python3 -ErrorAction SilentlyContinue)
+}
+
+if (-not (Test-PythonInstalled)) {
+    Write-Host "[SETUP] Python not found. Installing..."
+    $pyUrl = "https://www.python.org/ftp/python/3.13.5/python-3.13.5-amd64.exe"
+    $pyInstaller = "$PSScriptRoot\python-installer.exe"
+
+    # Download installer
+    Invoke-WebRequest $pyUrl -OutFile $pyInstaller
+
+    # Run installer silently
+    Start-Process -FilePath $pyInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
+
+    # Refresh environment PATH
+    $env:PATH += ";C:\Program Files\Python313\Scripts;C:\Program Files\Python313"
+
+    # Optional: reload environment variables from registry
+    $env:PATH = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
+
+    # Give some time for registration (optional)
+    Start-Sleep -Seconds 3
