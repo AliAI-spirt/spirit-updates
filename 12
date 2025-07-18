@@ -1,3 +1,4 @@
+# Check if Python is available
 function Test-PythonInstalled {
     return (Get-Command python -ErrorAction SilentlyContinue) -or (Get-Command python3 -ErrorAction SilentlyContinue)
 }
@@ -21,3 +22,21 @@ if (-not (Test-PythonInstalled)) {
 
     # Give some time for registration (optional)
     Start-Sleep -Seconds 3
+
+    # Try again
+    if (-not (Is-PythonInstalled)) {
+        Write-Host "[ERROR] Python not detected after installation."
+        exit 15
+    } else {
+        Write-Host "[OK] Python installed successfully."
+    }
+} else {
+    Write-Host "[OK] Python already installed."
+}
+
+# Show python version
+$pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+if ($pythonCmd) {
+    & $pythonCmd.Source --version
+}
+
