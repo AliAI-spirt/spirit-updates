@@ -1,30 +1,45 @@
-# Check if Python is available
+# Check if Python is installed and usable
 function Test-PythonInstalled {
-    return (Get-Command python -ErrorAction SilentlyContinue) -or (Get-Command python3 -ErrorAction SilentlyContinue)
+    $cmd = Get-Command python -ErrorAction SilentlyContinue
+    if ($cmd -and $cmd.Source -notmatch "windowsApps") {
+        return $true
+    }
+
+    $cmd3 = Get-Command python3 -ErrorAction SilentlyContinue
+    if ($cmd3 -and $cmd3.Source -notmatch "windowsApps") {
+        return $true
+    }
+
+    return $false
 }
 
+# Begin setup
 if (-not (Test-PythonInstalled)) {
-    Write-Host "[SETUP] Python not found. Installing..."
-    $pyUrl = "https://www.python.org/ftp/python/3.13.5/python-3.13.5-amd64.exe"
+    Write-Host "`n[SETUP] Python not found. Installing..."
+
+    $pyVersion = "3.13.5"
+    $pyUrl = "https://www.python.org/ftp/python/$pyVersion/python-$pyVersion-amd64.exe"
     $pyInstaller = "$PSScriptRoot\python-installer.exe"
 
-    # Download installer
+    # Download the installer
+    Write-Host "[INFO] Downloading Python $pyVersion..."
     Invoke-WebRequest $pyUrl -OutFile $pyInstaller
 
-    # Run installer silently
+    # Install silently
+    Write-Host "[INFO] Running silent installer..."
     Start-Process -FilePath $pyInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
 
-    # Refresh environment PATH
+    # Update PATH manually
     $env:PATH += ";C:\Program Files\Python313\Scripts;C:\Program Files\Python313"
 
-    # Optional: reload environment variables from registry
+    # Reload environment PATH from registry (optional but safer)
     $env:PATH = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
 
-    # Give some time for registration (optional)
+    # Wait briefly for changes to register
     Start-Sleep -Seconds 3
 
-    # Try again
-    if (-not (Is-PythonInstalled)) {
+    # Re-check installation
+    if (-not (Test-PythonInstalled)) {
         Write-Host "[ERROR] Python not detected after installation."
         exit 15
     } else {
@@ -34,9 +49,9 @@ if (-not (Test-PythonInstalled)) {
     Write-Host "[OK] Python already installed."
 }
 
-# Show python version
+# Show Python version and path
 $pythonCmd = Get-Command python -ErrorAction SilentlyContinue
-if ($pythonCmd) {
+if ($pythonCmd -and $pythonCmd.Source -notmatch "windowsApps") {
+    Write-Host "`n[INFO] Python path: $($pythonCmd.Source)"
     & $pythonCmd.Source --version
 }
-
