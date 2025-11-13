@@ -2,9 +2,8 @@
   "version": "1.0.1",
   "changelog": [
                
-                "- إضافة خيارات تخصيص متقدمة",
-                "- دعم شاشات عالية الدقة (4K)",
-                "- تحسين أداء قاعدة البيانات"
+                "- تم أضافت التقارير ",
+                "- و تم تعديل متطلبات لعرفات ",
             ],
   "url": "https://github.com/AliAI-spirt/spirit-updates/releases/download/MedTechv1.0.1/Setup-SpiritMedTech-Update.zip"
 }
